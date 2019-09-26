@@ -1,3 +1,57 @@
+/*
+10. Regular Expression Matching
+
+Given an input string (s) and a pattern (p), implement regular expression matching with support for '.' and '*'.
+
+'.' Matches any single character.
+'*' Matches zero or more of the preceding element.
+The matching should cover the entire input string (not partial).
+
+Note:
+
+s could be empty and contains only lowercase letters a-z.
+p could be empty and contains only lowercase letters a-z, and characters like . or *.
+
+Example 1:
+
+	Input:
+	s = "aa"
+	p = "a"
+	Output: false
+	Explanation: "a" does not match the entire string "aa".
+
+Example 2:
+
+	Input:
+	s = "aa"
+	p = "a*"
+	Output: true
+	Explanation: '*' means zero or more of the preceding element, 'a'. Therefore, by repeating 'a' once, it becomes "aa".
+
+Example 3:
+
+	Input:
+	s = "ab"
+	p = ".*"
+	Output: true
+	Explanation: ".*" means "zero or more (*) of any character (.)".
+
+Example 4:
+
+	Input:
+	s = "aab"
+	p = "c*a*b"
+	Output: true
+	Explanation: c can be repeated 0 times, a can be repeated 1 time. Therefore, it matches "aab".
+
+Example 5:
+
+	Input:
+	s = "mississippi"
+	p = "mis*is*p*."
+	Output: false
+*/
+
 // Имплементируйте систему регулярных выражений, поддерживающую символы '.' и '*'.
 //
 // Где, '.' совпадает с любмым одним символом.
@@ -19,7 +73,7 @@
 //    isMatch("ab", ".*") → true
 //    isMatch("aab", "c*a*b") → true
 
-package main
+package regular_expression_matching
 
 import (
 	"fmt"
@@ -40,7 +94,7 @@ func shifter(text, char string) int {
 	return 1
 }
 
-func isMatch(text, expression string) bool {
+func isMatch2(text, expression string) bool {
 	if len(text) == 0 {
 		return len(expression) == 0
 	}
@@ -127,4 +181,58 @@ func main() {
 		}
 		fmt.Printf(" isMatch(\"%s\", \"%s\") должно быть = %v\n", test.Text, test.Expression, test.Expect)
 	}
+}
+
+// lCmd находит в регулярке первую команду слева.
+// Возвращает:
+// 	 1. символы, которые нуждаются в проверке;
+//   2. операцию, которую необходимо выполнить над возвращаемыми символами;
+//   3. остаток необработанного текста регулярки.
+func lCmd(p string) (string, string, string) {
+	if len(p) == 0 {
+		return "", "", ""
+	}
+
+	var i int
+	var r rune
+	var sym, cmd string
+
+	for i, r = range p {
+		if r == '.' || r == '*' {
+			cmd = string(r)
+			break
+		}
+		sym += string(r)
+	}
+
+	return sym, cmd, p[i+1:]
+}
+
+func cmdMatch(sym, cmd, cmdText string) (bool, string) {
+	switch cmd {
+	case ".":
+	case "*":
+	case "":
+		// нет команды, значит мы должны проверить
+		// строгое соответствие текста с sym
+
+	}
+	_ = sym
+	_ = cmdText
+
+	return
+}
+
+func isMatch(s string, p string) bool {
+	if len(s) == 0 {
+		return len(p) == 0
+	}
+	if len(p) == 0 {
+		return false
+	}
+
+	sym, cmd, newP := lCmd(p)
+	valid, newS := cmdMatch(sym, cmd, newP)
+
+	return valid && isMatch(newS, newP)
 }
